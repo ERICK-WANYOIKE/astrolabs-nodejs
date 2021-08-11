@@ -69,7 +69,8 @@ server.use(
 // to an available Port
 // server.listen(portNumber, callbackFunction)
 server.listen(
-    3001,
+    // Check the Environment Variable for PORT otherwise use 3001
+    process.env.PORT || 3001,
     () => {
         console.log('Server is running on http://localhost:3001/');
     }
