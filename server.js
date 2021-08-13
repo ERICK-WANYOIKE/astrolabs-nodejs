@@ -6,6 +6,16 @@ const express = require('express');
 const cors = require('cors');
 // This will make 'server' an object with methods 
 // for server operations
+
+// dotenv will allow Express to read Environment Variables
+require('dotenv').config();
+// Cloudinary is the CDN (Content Delivery Network) service
+const cloudinary = require('cloudinary').v2;
+// express-form-data will allow files to be sent
+const expressFormData = require('express-form-data');
+
+
+
 const server = express();
 
 
@@ -15,6 +25,8 @@ server.use( express.urlencoded({ extended: false }) );
 server.use( express.json() );
 // Tell express to allow external HTTP requests
 server.use(cors());
+// Tell Express about express-form-data
+server.use( expressFormData.parse() );
 
 // Import mongoose to connect to MongoDB Atlas
 const mongoose = require('mongoose');
@@ -44,6 +56,24 @@ mongoose
         console.log('error occurred', dbError);
     }
 );
+
+
+
+
+    // Configure cloudinary
+// Cloudinary needs to know our credentials 
+// before accepting any HTTP request
+cloudinary.config(
+    {
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_SECRET
+    }
+);
+
+
+
+
 
 
 // A method to process a GET HTTP request.

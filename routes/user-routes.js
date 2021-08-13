@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const bcryptjs = require('bcryptjs');
 const UserModel = require('../models/UserModel.js');
+const cloudinary = require('cloudinary').v2;
 
 // Get all of the users
 // http://localhost:3001/users/
@@ -42,7 +43,7 @@ router.post('/create',
         UserModel
         .findOne({ email: formData.email }) // for example: jondoe@gmail.com
         .then(
-            (dbDocument) => {
+            async (dbDocument) => {
 
                 // If email exists, reject request
                 if(dbDocument) {
@@ -51,6 +52,27 @@ router.post('/create',
 
                 // Otherwise, create the account
                 else {
+                
+                    // If avatar file is included...
+                    if( Object.values(req.files).length > 0 ) {
+
+                        const files = Object.values(req.files);
+                        
+                        // upload to Cloudinary
+                        await cloudinary.uploader.upload(
+                            files[0].path,
+                            (cloudinaryErr, cloudinaryResult) => {
+                                if(cloudinaryErr) {
+                                    console.log(cloudinaryErr);
+                                } else {
+                                    // Include the image url in formData
+                                    formData.avatar = cloudinaryResult.url;
+                                }
+                            }
+                        )
+                    };
+
+                    
                     // Generate a Salt
                     bcryptjs.genSalt(
                         (err, theSalt) => {
