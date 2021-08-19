@@ -124,6 +124,24 @@ server.get(
     }
 );
 
+server.get(
+    '/products/:id',                        // http://localhost:3001/
+    (req, res) => { 
+
+        const id = req.params.id;
+        const price = req.query.price;
+        const ratings = req.query.ratings;
+
+        const product = {
+            iphone: 'Apple iPhone 12',
+            s21: 'Samsung Galaxy 21',
+            px22: 'Turtle Beach PX22 Headset'
+        }
+
+        res.send(`<html><head><title>products</title></head><body><h1>Product: ${product[id]}</h1>Price is: ${price} <br/> Ratings: ${ratings}</body></html>`)
+    }
+);
+
 
 server.use(
     '/users', userRoutes
@@ -132,6 +150,8 @@ server.use(
 server.use(
     '/products', productRoutes
 );
+
+
 
 
 // The .listen() will connect the server
