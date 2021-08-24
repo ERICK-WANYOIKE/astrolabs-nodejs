@@ -50,7 +50,12 @@ router.post('/create',
 
                 // If email exists, reject request
                 if(dbDocument) {
-                    res.send("Sorry, an account with this email already exists.");
+                    res.json(
+                        {
+                            status: "unsuccessful",
+                            message:"Sorry, an account with this email already exists."
+                        }
+                    )
                 } 
 
                 // Otherwise, create the account
@@ -95,12 +100,23 @@ router.post('/create',
                                     )
                                     .then(
                                         (dbDocument) => {
-                                            res.send(dbDocument);
+                                            res.json(
+                                                {
+                                                    dbDocument:dbDocument,
+                                                    status: "successful"
+                                                }
+
+                                            );
                                         }
                                     )
                                     .catch(
                                         (error) => {
                                             console.log(error);
+                                            res.json(
+                                                {
+                                                    status: "unsuccessful"
+                                                }
+                                            )
                                         }
                                     );
                                 }
@@ -113,6 +129,11 @@ router.post('/create',
         .catch(
             (err)=>{
                 console.log(err);
+                res.json(
+                    {
+                        status: "unsuccessful"
+                    }
+                )
             }
         )
     }
